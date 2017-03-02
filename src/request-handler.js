@@ -79,10 +79,12 @@ function handler(app, bot) {
 
         // Fire the event and send the message result
         // to the channel
-        // TODO: Send embeds
         let response = events[event](req.body, chanId);
         if(typeof response === 'string' && response.trim !== '') {
             chan.sendMessage(response);
+        }
+        if(typeof response === 'object') {
+            chan.sendEmbed(response);
         }
     });
     

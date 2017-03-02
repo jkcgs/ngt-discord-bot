@@ -1,4 +1,5 @@
 const config = require('../config.json');
+const Discord = require('discord.js');
 
 /**
  * Implements GitHub events from webhook and returns some nice message
@@ -16,7 +17,6 @@ class Events {
     }
 
     push(data) {
-        let message = '';
         const repo = data.repository['full_name'];
         const branch = data.ref.split('/')[2];
 
@@ -30,28 +30,49 @@ class Events {
         // https://github.com/Falconerd/discord-bot-github/blob/d569b0ac9afea4df1537d31f87b403423ea08660/src/events.js
         // Soon to be deleted
         if (data.commits.length === 1) {
-            const commit = data.commits[0];
-            const name = commit.author.name;
-            const commitMessage = commit.message;
-            const sha = commit.id.substring(0, 7);
-            const url = `https://github.com/${repo}/commit/${sha}`;
-            message += `[**${repo}:${branch}**] 1 new commit by ${name}`;
-            message += `\n${commitMessage} - ${name}`;
-            message += `\n${url}`;
+            let commit = data.commits[0];
+            let hash = commit.id.substr(0, 7);
+            const embed = new Discord.RichEmbed()
+                .setTitle(`Pushed commit to ${repo}@${branch}`)
+                .setAuthor(commit.author.username, data.sender['avatar_url'])
+                .setDescription(`[${hash}](${commit.url}) ${commit.message}`)
+                .setURL(commit.url);
+            return embed;
         } else {
-            const commits = data.commits;
+            let same = true;
+            let firstAuthor = data.commits[0].author.username;
+            for(let commit of data.commits) {
+                if(firstAuthor !== commit.author.username) {
+                    same = false;
+                    break;
+                }
+            }
 
-            message += `[**${repo}:${branch}**] ${commits.length} new commits`;
+            if(same) {
+                let desc = [];
+                for(let commit of data.commits) {
+                    let hash = commit.id.substr(0, 7);
+                    desc.push(`[${hash}](${commit.url}) ${commit.message}`);
+                }
 
-            for (let commit of commits) {
-                const sha = commit.id.substring(0, 7);
-                const url = `https://github.com/${repo}/commit/${sha}`;
-                message += `\n${commit.message} - ${commit.author.name}`;
-                message += `\n${url}`;
+                const embed = new Discord.RichEmbed()
+                    .setAuthor(data.commits[0].author.username, data.sender['avatar_url'])
+                    .setTitle(`Pushed ${data.commits.length} commits to ${repo}@${branch}`)
+                    .setDescription(desc.join('\n'));
+                return embed;
+            } else {
+                let desc = [];
+                for(let commit of data.commits) {
+                    let hash = commit.id.substr(0, 7);
+                    desc.push(`[${hash}](${commit.url}) ${commit.message} - ${commit.author.username}`);
+                }
+
+                const embed = new Discord.RichEmbed()
+                    .setTitle(`${data.commits.length} commits pushed to ${repo}@${branch}`)
+                    .setDescription(desc.join('\n'));
+                return embed;
             }
         }
-
-        return message;
     }
 }
 
