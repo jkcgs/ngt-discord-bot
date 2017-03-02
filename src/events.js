@@ -21,7 +21,7 @@ class Events {
         const branch = data.ref.split('/')[2];
 
         // Branch filter
-        let branches = config.repos[repo].branches;
+        let branches = config.repos[repo].branches || ['*'];
         if(branches.indexOf('*') === -1 && branches.indexOf(branch) === -1) {
             return;
         }

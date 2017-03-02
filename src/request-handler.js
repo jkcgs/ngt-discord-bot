@@ -60,7 +60,7 @@ function handler(app, bot) {
         }
 
         // Check if event is allowed
-        let allowedEvs = config.repos[repo].events;
+        let allowedEvs = config.repos[repo].events || ['*'];
         if(allowedEvs.indexOf('*') === -1 && allowedEvs.indexOf(evName) === -1) {
             res.json({
                 success: false
