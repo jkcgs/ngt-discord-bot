@@ -17,5 +17,13 @@
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkcgs/discord-github-robot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jkcgs/discord-github-robot/issues"
+  },
+  "homepage": "https://github.com/jkcgs/discord-github-robot#readme"
 }
