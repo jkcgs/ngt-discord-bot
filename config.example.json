@@ -1,0 +1,17 @@
+{
+    "token": "",
+    "secret": "",
+    "ownerId": "",
+    "port": 3030,
+    "repos": {
+        "repo/url": {
+            "events": ["event1", "event2"],
+            "branches": ["branch1"]
+        },
+        "repo/url2": {
+            "events": ["event1", "event2"],
+            "branches": ["*"]
+        },
+        "another/repo": true
+    }
+}
