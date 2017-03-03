@@ -40,6 +40,7 @@ function handler(app, bot) {
 
         // Checks if event is implemented
         if(typeof events[event] !== 'function') {
+            console.log('Received non-implemented event ' + event);
             res.status(401);
             return res.json({
                 success: false,
@@ -53,6 +54,7 @@ function handler(app, bot) {
 
         // Repo not configured
         if(!config.repos.hasOwnProperty(repo)) {
+            console.log('Received non-configured repository ' + repo);
             res.status(401);
             return res.json({
                 success: false,
@@ -63,6 +65,7 @@ function handler(app, bot) {
         // Not in channel
         let chan = getChannel(chanId);
         if(!chan) {
+            console.log(`Received a channel target where the bot is not in: ${chanId}`);
             res.status(401);
             return res.json({
                 success: false,
