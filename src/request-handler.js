@@ -33,14 +33,17 @@ function handler(app, bot) {
         if(sig !== dig) {
             res.status(401);
             return res.json({
-                success: false
+                success: false,
+                message: 'Could not verify the request (Wrong secret?)'
             });
         }
 
         // Checks if event is implemented
         if(typeof events[event] !== 'function') {
+            res.status(401);
             return res.json({
-                success: false
+                success: false,
+                message: 'Event not implemented'
             });
         }
 
@@ -50,20 +53,29 @@ function handler(app, bot) {
 
         // Repo not configured
         if(!config.repos.hasOwnProperty(repo)) {
-            return res.json({ success: false });
+            res.status(401);
+            return res.json({
+                success: false,
+                message: 'Invalid repository'
+            });
         }
 
         // Not in channel
         let chan = getChannel(chanId);
         if(!chan) {
-            return res.json({ success: false });
+            res.status(401);
+            return res.json({
+                success: false,
+                message: 'I\'m not on the target channel'
+            });
         }
 
         // Check if event is allowed
         let allowedEvs = config.repos[repo].events || ['*'];
         if(allowedEvs.indexOf('*') === -1 && allowedEvs.indexOf(evName) === -1) {
-            res.json({
-                success: false
+            return res.json({
+                success: false,
+                message: 'Event not allowed'
             });
         }
 
