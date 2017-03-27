@@ -1,10 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const Discord = require('discord.js');
 const log = require('./src/logger');
 const config = require('./config.json');
-const bot = new Discord.Client();
 const app = express();
 
 let lf = '[:date[clf]] :remote-addr :method :url :status ":referrer" ":user-agent"';
@@ -16,10 +14,7 @@ let port = process.env.PORT || config.port || 3030;
 app.listen(port, () => {
     log.info('Listening on port ' + port);
 
-    bot.login(config.token)
-        .then(log.info('Logged in.'))
-        .catch(error => log.error(error));
-    
+    let bot = require('./src/bot');
     require('./src/loader')(app, bot);
 });
 

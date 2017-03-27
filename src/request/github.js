@@ -56,7 +56,7 @@ function handler(app, bot) {
         }
 
         // Not in channel
-        let chan = getChannel(chanId);
+        let chan = bot.getChannel(chanId);
         if(!chan) {
             log.warn(`Received a channel target where the bot is not in: ${chanId}`);
             res.status(401);
@@ -95,16 +95,4 @@ function handler(app, bot) {
             chan.sendEmbed(response);
         }
     });
-    
-    // Get the channel object by ID
-    bot.getChannel = getChannel;
-    function getChannel(id) {
-        for (let [key, value] of bot.channels) {
-            if(id === key) {
-                return value;
-            }
-        }
-
-        return null;
-    }
 }
