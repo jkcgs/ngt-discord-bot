@@ -14,5 +14,8 @@
             "branches": ["*"]
         },
         "another/repo": true
+    },
+    "crowdinProjects": {
+        "project-id": "project-name"
     }
 }
