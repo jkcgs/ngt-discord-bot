@@ -1,6 +1,7 @@
-const Events = require('./events');
+const GithubEvents = require('../event/github');
 const crypto = require('crypto');
-const config = require('../config.json');
+const config = require('../../config.json');
+const log = require('../logger');
 module.exports = handler;
 
 /**
@@ -10,15 +11,7 @@ module.exports = handler;
  * @param {any} bot The Discord Client object
  */
 function handler(app, bot) {
-    let events = new Events(bot);
-
-    // Just the root
-    app.get('/', (req, res) => {
-        res.json({
-            success: true,
-            message: 'Hello!'
-        });
-    });
+    let events = new GithubEvents(bot);
 
     // Loads the payload url for webhooks
     app.post('/payload/:channel/', (req, res, next) => {
@@ -40,7 +33,7 @@ function handler(app, bot) {
 
         // Checks if event is implemented
         if(typeof events[event] !== 'function') {
-            console.log('Received non-implemented event ' + event);
+            log.warn('Received non-implemented event ' + event);
             res.status(401);
             return res.json({
                 success: false,
@@ -54,7 +47,7 @@ function handler(app, bot) {
 
         // Repo not configured
         if(!config.repos.hasOwnProperty(repo)) {
-            console.log('Received non-configured repository ' + repo);
+            log.warn('Received non-configured repository ' + repo);
             res.status(401);
             return res.json({
                 success: false,
@@ -65,7 +58,7 @@ function handler(app, bot) {
         // Not in channel
         let chan = getChannel(chanId);
         if(!chan) {
-            console.log(`Received a channel target where the bot is not in: ${chanId}`);
+            log.warn(`Received a channel target where the bot is not in: ${chanId}`);
             res.status(401);
             return res.json({
                 success: false,
@@ -85,7 +78,7 @@ function handler(app, bot) {
         // Log some info
         let cn = chan.name;
         let sn = chan.guild.name;
-        console.log(`Firing event "${evName}" for #${cn}@"${sn}"`);
+        log.info(`${repo} -> "${evName}" -> #${cn}@"${sn}"`);
 
         // Give an OK response to the request
         res.json({

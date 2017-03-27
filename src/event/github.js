@@ -1,4 +1,4 @@
-const config = require('../config.json');
+const config = require('../../config.json');
 const Discord = require('discord.js');
 
 /**
@@ -7,7 +7,7 @@ const Discord = require('discord.js');
  * 
  * @class Events
  */
-class Events {
+class GithubEvents {
     constructor(bot) {
         this.bot = bot;
     }
@@ -26,9 +26,6 @@ class Events {
             return;
         }
 
-        // This thing comes from here:
-        // https://github.com/Falconerd/discord-bot-github/blob/d569b0ac9afea4df1537d31f87b403423ea08660/src/events.js
-        // Soon to be deleted
         if (data.commits.length === 1) {
             let commit = data.commits[0];
             let hash = commit.id.substr(0, 7);
@@ -76,4 +73,4 @@ class Events {
     }
 }
 
-module.exports = Events;
+module.exports = GithubEvents;

@@ -1,6 +1,7 @@
 {
     "token": "",
     "secret": "",
+    "urlsecret": "",
     "ownerId": "",
     "port": 3030,
     "repos": {

@@ -1,8 +1,8 @@
 {
-  "name": "discord-github-robot",
-  "version": "1.0.0",
-  "description": "Title",
-  "main": "index.js",
+  "name": "ngt-discord-bot",
+  "version": "1.1.0",
+  "description": "A bot for Discord for the 'Nintendo Guides Translation' server",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon"
@@ -12,18 +12,21 @@
   "dependencies": {
     "body-parser": "^1.17.0",
     "crypto": "0.0.3",
+    "dateformat": "^2.0.0",
     "discord.js": "^11.0.0",
-    "express": "^4.15.0"
+    "express": "^4.15.0",
+    "logger": "0.0.1",
+    "morgan": "^1.8.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jkcgs/discord-github-robot.git"
+    "url": "git+https://github.com/jkcgs/ngt-discord-bot.git"
   },
   "bugs": {
-    "url": "https://github.com/jkcgs/discord-github-robot/issues"
+    "url": "https://github.com/jkcgs/ngt-discord-bot/issues"
   },
-  "homepage": "https://github.com/jkcgs/discord-github-robot#readme"
+  "homepage": "https://github.com/jkcgs/ngt-discord-bot#readme"
 }

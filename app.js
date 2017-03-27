@@ -1,26 +1,26 @@
 const express = require('express');
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const Discord = require('discord.js');
+const log = require('./src/logger');
 const config = require('./config.json');
-const reqHandler = require('./src/request-handler');
 const bot = new Discord.Client();
 const app = express();
 
+let lf = '[:date[clf]] :remote-addr :method :url :status ":referrer" ":user-agent"';
+app.use(morgan(lf));
 app.use(bodyParser.json({ verify: rawBody }));
-reqHandler(app, bot);
-
-/*bot.on('message', (message) => {
-    if (message.author.id === bot.user.id) return;
-});*/
 
 // Sets up the port and listen
-let port = process.env.PORT || config.port || 8080;
+let port = process.env.PORT || config.port || 3030;
 app.listen(port, () => {
-    console.log('Listening on port ' + port);
+    log.info('Listening on port ' + port);
 
     bot.login(config.token)
-        .then(console.log('Logged in.'))
-        .catch(error => console.log(error));
+        .then(log.info('Logged in.'))
+        .catch(error => log.error(error));
+    
+    require('./src/loader')(app, bot);
 });
 
 // Rescues the raw body to calculate its hash
