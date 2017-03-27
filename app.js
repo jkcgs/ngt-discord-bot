@@ -15,6 +15,16 @@ app.listen(port, () => {
     log.info('Listening on port ' + port);
 
     let bot = require('./src/bot');
+    bot.on('message', (message) => {		
+        if (message.author.id === bot.user.id) {
+            return;
+        }
+
+        if(message.content.trim() === '+repo') {
+            message.reply('https://github.com/jkcgs/ngt-discord-bot');
+        }
+    });
+
     require('./src/loader')(app, bot);
 });
 
