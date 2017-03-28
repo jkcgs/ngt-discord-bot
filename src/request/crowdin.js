@@ -92,7 +92,7 @@ function handler(app, bot) {
     function receiver(completed, req, res) {
         let projectName = config.crowdinProjects[req.query.project];
         let langSplit = langs[req.query.language].split('|');
-        let message = `${projectName}: Language ${langSplit[0]}`;
+        let message = `${projectName}: ${langSplit[0]}`;
 
         if (langSplit.length > 1) {
             message += ` :${langSplit[1]}:`;
