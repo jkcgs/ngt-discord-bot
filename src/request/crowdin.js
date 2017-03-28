@@ -70,7 +70,7 @@ function handler(app, bot) {
         }
 
         // Unrecognized language
-        if(langs.hasOwnProperty(req.query.language)) {
+        if(!langs.hasOwnProperty(req.query.language)) {
             log.warn(`Received an invalid language`);
             res.status(400);
             return res.json({
@@ -92,15 +92,15 @@ function handler(app, bot) {
     function receiver(completed, req, res) {
         let projectName = config.crowdinProjects[req.query.project];
         let langSplit = langs[req.query.language].split('|');
-        let message = 'Language ' + langSplit[0];
+        let message = `${projectName}: Language ${langSplit[0]}`;
 
         if (langSplit.length > 1) {
             message += ` :${langSplit[1]}:`;
         }
 
         message += completed ? 
-            ' is now completed and verified!' :
-            ' is now fully translated! Time to proofread!';
+            ' is now **completed and verified**!' :
+            ' is now **fully translated**! Time to proofread!';
 
         let chan = bot.getChannel(req.params.channel);
         chan.sendMessage(message);
