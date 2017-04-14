@@ -12,8 +12,7 @@ module.exports = morgan(function (tokens, req, res) {
         tokens.method(req, res),
         tokens.url(req, res),
         tokens.status(req, res), ref,
-        '"' + req.headers['user-agent'] + '"',
-        tokens.res(req, res, 'content-length'), '-',
+        '"' + req.headers['user-agent'] + '"', '-',
         tokens['response-time'](req, res), 'ms'
     ].join(' ')
 });
