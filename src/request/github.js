@@ -55,6 +55,29 @@ function handler(app, bot) {
             });
         }
 
+        // Check if the branch is on the config
+        let branches = config.repos[repo].branches;
+        let branchOk = false;
+        for(let i = 0; i < branches.length; i++) {
+            let branch = branches[i];
+            
+            if(req.body.ref === ('refs/heads/' + branch)) {
+                branchOk = true;
+                break;
+            }
+        }
+
+        // Check if branch has passed the test
+        if(!branchOk) {
+            let reqBranch = req.body.ref.replace('refs/heads/', '');
+            log.warn('Received non-configured branch ' + reqBranch);
+            res.status(401);
+            return res.json({
+                success: false,
+                message: 'Invalid branch'
+            });
+        }
+
         // Not in channel
         let chan = bot.getChannel(chanId);
         if(!chan) {
