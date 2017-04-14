@@ -1,12 +1,11 @@
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const log = require('./src/logger');
+const morgan = require('./src/morgan');
 const config = require('./config.json');
 const app = express();
 
-let lf = '[:date[clf]] :remote-addr :method :url :status ":referrer" ":user-agent"';
-app.use(morgan(lf));
+app.use(morgan);
 app.use(bodyParser.json({ verify: rawBody }));
 
 // Sets up the port and listen
