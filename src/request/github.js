@@ -78,17 +78,6 @@ function handler(app, bot) {
             });
         }
 
-        // Not in channel
-        let chan = bot.getChannel(chanId);
-        if(!chan) {
-            log.warn(`Received a channel target where the bot is not in: ${chanId}`);
-            res.status(401);
-            return res.json({
-                success: false,
-                message: 'I\'m not on the target channel'
-            });
-        }
-
         // Check if event is allowed
         let allowedEvs = config.repos[repo].events || ['*'];
         if(allowedEvs.indexOf('*') === -1 && allowedEvs.indexOf(evName) === -1) {
@@ -98,24 +87,33 @@ function handler(app, bot) {
             });
         }
 
-        // Log some info
-        let cn = chan.name;
-        let sn = chan.guild.name;
-        log.info(`${repo} -> "${evName}" -> #${cn}@"${sn}"`);
+        let channels = config.repos[repo].channels;
+        for(let chanId of channels) {
+            let chan = bot.getChannel(chanId);
+            if(!chan) {
+                log.warn(`Received a channel target where the bot is not in: ${chanId}`);
+                continue;
+            }
+
+            // Log some info
+            let cn = chan.name;
+            let sn = chan.guild.name;
+            log.info(`${repo} -> "${evName}" -> #${cn}@"${sn}"`);
+    
+            // Fire the event and send the message result
+            // to the channel
+            let response = events[event](req.body, chanId);
+            if(typeof response === 'string' && response.trim !== '') {
+                chan.sendMessage(response);
+            }
+            if(typeof response === 'object') {
+                chan.sendEmbed(response);
+            }
+        }
 
         // Give an OK response to the request
         res.json({
             success: true
         });
-
-        // Fire the event and send the message result
-        // to the channel
-        let response = events[event](req.body, chanId);
-        if(typeof response === 'string' && response.trim !== '') {
-            chan.sendMessage(response);
-        }
-        if(typeof response === 'object') {
-            chan.sendEmbed(response);
-        }
     });
 }

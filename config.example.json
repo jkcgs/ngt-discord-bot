@@ -7,11 +7,13 @@
     "repos": {
         "repo/url": {
             "events": ["event1", "event2"],
-            "branches": ["branch1"]
+            "branches": ["branch1"],
+            "channels": ["channelID1", "channelID2"]
         },
         "repo/url2": {
             "events": ["event1", "event2"],
-            "branches": ["*"]
+            "branches": ["*"],
+            "channels": ["channelID1", "channelID2"]
         },
         "another/repo": true
     },
