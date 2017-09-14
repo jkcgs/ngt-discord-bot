@@ -1,6 +1,6 @@
 {
   "name": "ngt-discord-bot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A bot for Discord for the 'Nintendo Guides Translation' server",
   "main": "app.js",
   "scripts": {
