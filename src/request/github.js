@@ -55,8 +55,10 @@ function handler(app, bot) {
             });
         }
 
+        let repoCfg = config.repos[repo];
+
         // Check if the branch is on the config
-        let branches = config.repos[repo].branches;
+        let branches = repoCfg.branches;
         let branchOk = false;
         for(let i = 0; i < branches.length; i++) {
             let branch = branches[i];
@@ -79,7 +81,7 @@ function handler(app, bot) {
         }
 
         // Check if event is allowed
-        let allowedEvs = config.repos[repo].events || ['*'];
+        let allowedEvs = repoCfg.events || ['*'];
         if(allowedEvs.indexOf('*') === -1 && allowedEvs.indexOf(evName) === -1) {
             return res.json({
                 success: false,
@@ -87,11 +89,26 @@ function handler(app, bot) {
             });
         }
 
-        let channels = config.repos[repo].channels;
+        let channels = repoCfg.channels;
+        let filters = repoCfg.hasOwnProperty('filters') ? repoCfg.filters : [];
         for(let chanId of channels) {
             let chan = bot.getChannel(chanId);
             if(!chan) {
                 log.warn(`Received a channel target where the bot is not in: ${chanId}`);
+                continue;
+            }
+
+            let channelFilters = filters.hasOwnProperty(chanId) ? filters[chanId] : [];
+            let filterCommit = false;
+            for(var filter of channelFilters) {
+                let rx = (new RegExp(filter, 'g')).compile();
+                if(filter.match(new RegExp(filter, 'g'))) {
+                    filterCommit = true;
+                    break;
+                }
+            }
+            
+            if(filterCommit) {
                 continue;
             }
 

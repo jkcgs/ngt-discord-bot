@@ -8,7 +8,12 @@
         "repo/url": {
             "events": ["event1", "event2"],
             "branches": ["branch1"],
-            "channels": ["channelID1", "channelID2"]
+            "channels": ["channelID1", "channelID2"],
+            "filters": {
+                "channelID1": [
+                    "^Translation updates"
+                ]
+            }
         },
         "repo/url2": {
             "events": ["event1", "event2"],
