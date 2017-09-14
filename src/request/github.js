@@ -90,25 +90,10 @@ function handler(app, bot) {
         }
 
         let channels = repoCfg.channels;
-        let filters = repoCfg.hasOwnProperty('filters') ? repoCfg.filters : [];
         for(let chanId of channels) {
             let chan = bot.getChannel(chanId);
             if(!chan) {
                 log.warn(`Received a channel target where the bot is not in: ${chanId}`);
-                continue;
-            }
-
-            let channelFilters = filters.hasOwnProperty(chanId) ? filters[chanId] : [];
-            let filterCommit = false;
-            for(var filter of channelFilters) {
-                let rx = (new RegExp(filter, 'g')).compile();
-                if(filter.match(new RegExp(filter, 'g'))) {
-                    filterCommit = true;
-                    break;
-                }
-            }
-            
-            if(filterCommit) {
                 continue;
             }
 

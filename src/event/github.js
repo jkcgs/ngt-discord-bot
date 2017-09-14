@@ -16,18 +16,36 @@ class GithubEvents {
         return 'Ping received for repo ' + data.repository['full_name'];
     }
 
-    push(data) {
+    push(data, chanId) {
         const repo = data.repository['full_name'];
         const branch = data.ref.split('/')[2];
+        const repoCfg = config.repos[repo];
 
         // Branch filter
-        let branches = config.repos[repo].branches || ['*'];
+        let branches = repoCfg.branches || ['*'];
         if(branches.indexOf('*') === -1 && branches.indexOf(branch) === -1) {
             return;
         }
 
-        if (data.commits.length === 1) {
-            let commit = data.commits[0];
+        // Get channel filters
+        let filters = repoCfg.hasOwnProperty('filters') ? repoCfg.filters : [];
+        filters = filters.hasOwnProperty(chanId) ? filters[chanId] : [];
+        
+        // Commit filter
+        let commits = data.commits.filter(commit => {
+            for(let filter of filters) {
+                if(commit.message.match(new RegExp(filter, 'g'))) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        if (commits.length === 0) {
+            return false;
+        } else if (commits.length === 1) {
+            let commit = commits[0];
             let hash = commit.id.substr(0, 7);
             const embed = new Discord.RichEmbed()
                 .setTitle(`Pushed commit to ${repo}@${branch}`)
@@ -37,8 +55,8 @@ class GithubEvents {
             return embed;
         } else {
             let same = true;
-            let firstAuthor = data.commits[0].author.username;
-            for(let commit of data.commits) {
+            let firstAuthor = commits[0].author.username;
+            for(let commit of commits) {
                 if(firstAuthor !== commit.author.username) {
                     same = false;
                     break;
@@ -47,25 +65,25 @@ class GithubEvents {
 
             if(same) {
                 let desc = [];
-                for(let commit of data.commits) {
+                for(let commit of commits) {
                     let hash = commit.id.substr(0, 7);
                     desc.push(`[${hash}](${commit.url}) ${commit.message}`);
                 }
 
                 const embed = new Discord.RichEmbed()
-                    .setAuthor(data.commits[0].author.username, data.sender['avatar_url'])
+                    .setAuthor(commits[0].author.username, data.sender['avatar_url'])
                     .setTitle(`Pushed ${data.commits.length} commits to ${repo}@${branch}`)
                     .setDescription(desc.join('\n'));
                 return embed;
             } else {
                 let desc = [];
-                for(let commit of data.commits) {
+                for(let commit of commits) {
                     let hash = commit.id.substr(0, 7);
                     desc.push(`[${hash}](${commit.url}) ${commit.message} - ${commit.author.username}`);
                 }
 
                 const embed = new Discord.RichEmbed()
-                    .setTitle(`${data.commits.length} commits pushed to ${repo}@${branch}`)
+                    .setTitle(`${commits.length} commits pushed to ${repo}@${branch}`)
                     .setDescription(desc.join('\n'));
                 return embed;
             }
