@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const log = require('./src/logger');
 const morgan = require('./src/morgan');
-const config = require('./config.json');
+const config = require('./config.json')
+const pkgInfo = require('./package.json');
 const app = express();
 
 app.use(morgan);
@@ -20,7 +21,7 @@ app.listen(port, () => {
         }
 
         if(message.content.trim() === '+repo') {
-            message.reply('https://github.com/jkcgs/ngt-discord-bot');
+            message.reply(pkgInfo.homepage);
         }
     });
 
