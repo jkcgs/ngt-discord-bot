@@ -14,7 +14,7 @@ function handler(app, bot) {
     let events = new GithubEvents(bot);
 
     // Loads the payload url for webhooks
-    app.post('/payload/:channel/', (req, res, next) => {
+    app.post('/payload/', (req, res, next) => {
         let event = req.get('X-GitHub-Event');
         let sig = req.get('X-Hub-Signature');
 
