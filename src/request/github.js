@@ -71,8 +71,6 @@ function handler(app, bot) {
 
         // Check if branch has passed the test
         if(!branchOk) {
-            let reqBranch = req.body.ref.replace('refs/heads/', '');
-            //log.warn('Received non-configured branch ' + reqBranch);
             res.status(401);
             return res.json({
                 success: false,
